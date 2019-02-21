@@ -28,6 +28,20 @@ const customHost = argv.host || process.env.HOST;
 const host = customHost || null; // Let http.Server use its default IPv6/4 host
 const prettyHost = customHost || 'localhost';
 
+// fetch repo data from the github api.
+  extraServer.get('/:username', (req, res) => {
+    // console.log(req.params.username);
+    const URL = `https://api.github.com/users/${req.params.username}/repos?type=all&sort=updated`;
+    // console.log(`Fetching repos from github api for ${req.params.username}...`);
+    fetch(URL)
+      .then(res => res.json())
+      .then(data => {
+        res.send(data);
+        // console.log('Repos Fetched!');
+      });
+  });
+
+
 // use the gzipped bundle
 app.get('*.js', (req, res, next) => {
   req.url = req.url + '.gz'; // eslint-disable-line
